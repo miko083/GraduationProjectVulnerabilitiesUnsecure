@@ -5,7 +5,7 @@ In the future I will add to my GIT version of this app with fixed vulnerabilitie
 
 ## About app
 
-This application will be similar to Snapchat. Users will be able to share their photos with others, photos will be deleted after short amount of time.
+This application will be similar to Snapchat. Users will be able to share their photos with others, photos will be deleted after short amount of time. It is unsecured version.
 
 <!--- Currently it is very early version. -->
 
