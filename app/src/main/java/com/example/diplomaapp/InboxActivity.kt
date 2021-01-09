@@ -157,19 +157,13 @@ class InboxActivity : AppCompatActivity() {
 
         override fun getView(position: Int, view: View?, viewGroup: ViewGroup): View {
             var myView = view
-            var savedDraft = ""
             var helper = MyHelper(applicationContext)
             var db: SQLiteDatabase = helper.readableDatabase
 
             val message = this.getItem(position) as Message
             var recipient = message.getPersonName()
 
-            var rs = contentResolver.query(DraftProviders.CONTENT_URI, arrayOf(DraftProviders.MESSAGE,DraftProviders.SENDER, DraftProviders.RECIPIENT),"SENDER='$userName' AND RECIPIENT='$recipient'",null,null)
-            if(rs?.moveToNext() !! ) {
-                savedDraft = rs.getString(0)
-                if (savedDraft != null)
-                    Toast.makeText(myContext, "Read from drafts...", Toast.LENGTH_SHORT).show()
-            }
+
 
             // To avoid warning - only if myView is not null - create new one.
             if (myView == null)
@@ -195,7 +189,6 @@ class InboxActivity : AppCompatActivity() {
                     if (!previewMessage) {
                         //Toast.makeText(myContext, message.getPersonMessage(), Toast.LENGTH_SHORT).show()
                         val args = Bundle()
-                        args.putString("Message", savedDraft)
                         args.putString("Sender", userName)
                         args.putString("Recipient", recipient)
                         val dialog = MyDialog()
@@ -232,7 +225,6 @@ class InboxActivity : AppCompatActivity() {
         private var recipient: String? = null
 
         override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-            message = arguments?.getString("Message")
             sender = arguments?.getString("Sender")
             recipient = arguments?.getString("Recipient")
             return super.onCreateDialog(savedInstanceState)
@@ -240,6 +232,12 @@ class InboxActivity : AppCompatActivity() {
 
 
         override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+            var rs = context?.contentResolver?.query(DraftProviders.CONTENT_URI, arrayOf(DraftProviders.MESSAGE,DraftProviders.SENDER, DraftProviders.RECIPIENT),"SENDER='$sender' AND RECIPIENT='$recipient'",null,null)
+            if(rs?.moveToNext() !! ) {
+                message = rs.getString(0)
+                if (message != null)
+                    Toast.makeText(context, "Read from drafts...", Toast.LENGTH_SHORT).show()
+            }
             var myView = inflater.inflate(R.layout.write_message, container, false)
             var saveToDraftButton = myView.findViewById<Button>(R.id.saveToDraft)
             var selectPhoto = myView.findViewById<Button>(R.id.selectPhoto)
